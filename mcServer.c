@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include "server.h"
 
@@ -18,15 +17,19 @@
  *      a. screen -r <server>
  * 7. Exit the program*/
 
-struct Servers serverList[MAX_ARRAY_SIZE];
-int serverListSize = 0;
-
 int main(int argc, char *argv[]){
     char input;
     //Explain what the program does
     printf("This program can start and stop Minecraft servers on this PC.\n");
     printf("New servers can be added and old ones removed.\n");
     printf("Determine what server is running, and access the server command line\n");
+    //This part is for handling the situation where there isn't a server
+    //file or the file is empty. Needs to go straight to entering a
+    //server.
+    if(copyFromServersFile() == 0){
+        printf("No servers are saved in the this program.\n");
+        addMCserver();
+    }
     //Menu for the 7 options
     while(1){
         printf("Please chose from the following options:\n");
@@ -37,18 +40,22 @@ int main(int argc, char *argv[]){
         printf("5. What server is running?\n");
         printf("6. Enter server screen\n");
         printf("7. Exit program\n");
-
+        printf("Please select from the options above.\n");
         input = getchar();
         getchar();
 
         switch (input) {
-            case '1' : startMCServer();
-            case '2' : stopMCServer();
-            case '3' : addMCserver();
-            case '4' : removeMCServer();
-            case '5' : whatServerIsRunning();
-            case '6' : enterMCServerScreen();
+            case '1' : startMCServer();break;
+            case '2' : stopMCServer();break;
+            case '3' : addMCserver();break;
+            case '4' : removeMCServer();break;
+            case '5' : whatServerIsRunning();break;
+            case '6' : enterMCServerScreen();break;
             case '7' : break;
+            default: printf("%c is not a valid option\n", input);
+        }
+        if(input=='7'){
+            break;
         }
     }
     return 0;

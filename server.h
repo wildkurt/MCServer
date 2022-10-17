@@ -12,16 +12,20 @@ struct Servers{
     char *name;
     char *filePath;
 };
+
+struct Servers servers[MAX_ARRAY_SIZE];
+
 void startMCServer();
 void stopMCServer();
 void addMCserver();
 void removeMCServer();
 void whatServerIsRunning();
 void enterMCServerScreen();
-void copyFromServersFile();
+int copyFromServersFile();
 void writeToServersFile();
-void checkIfServerFileIsEmpty();
 int isAServerRunning();
 void listServers();
+int notAValidSelection(int option);
+int findEmptySpot();
 
 #endif //MCSERVER_SERVER_H

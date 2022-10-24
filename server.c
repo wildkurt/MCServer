@@ -13,7 +13,6 @@ void startMCServer(){
     FILE *running;
     int option = 0;
     char command[MAX_ARRAY_SIZE] = "screen -dmS ";
-    extern struct Servers servers[];
     // Need to check and see if a server is
     //running first.
     if(isAServerRunning()){
@@ -156,7 +155,6 @@ int copyFromServersFile(){
     int size = 0, index = 0;
     char nameBuffer[MAX_ARRAY_SIZE] = {0};
     char pathBuffer[MAX_ARRAY_SIZE] = {0};
-    extern struct Servers servers[];
     //open the file
     input = fopen("serversfile","r");
     //See if the file exists
@@ -183,7 +181,6 @@ int copyFromServersFile(){
 /**This should only run if there are servers in the servers
  * array when the program exits.*/
 void writeToServersFile(){
-    extern struct Servers servers[];
     FILE *serversfile;
     char writeBuffer[MAX_ARRAY_SIZE] = {0};
 
@@ -277,7 +274,6 @@ int isAServerRunning(){
     }
 }
 void listServers(){
-    extern struct Servers servers[];
     int index = 0;
     while(servers[index].name != 0){
         printf("%d) %s\n", index + 1, servers[index].name);
@@ -286,7 +282,6 @@ void listServers(){
 }
 //Checks to see if the option is a valid server
 int notAValidSelection(int option){
-    extern struct Servers servers[];
     if(servers[option].name == 0){
         return 1;
     }
@@ -296,7 +291,6 @@ int notAValidSelection(int option){
 }
 //Finds the first empty spot in the servers array
 int findEmptySpot(){
-    extern struct Servers servers[];
     int i = 0;
     for(;i < MAX_ARRAY_SIZE;i++){
         if(servers[i].name == 0)
@@ -311,7 +305,6 @@ void zeroArray(char *arr){
 }
 
 void performRemovalAction(int opt){
-    extern struct Servers servers[];
     int size = 0;
     while(servers[size].name != 0){
         size++;

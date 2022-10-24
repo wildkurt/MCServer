@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
     while(1){
         printf("Please chose from the following options:\n");
         printf("1. Start a server\n");
-        printf("2. Stop a server\n");
+        printf("2. Stop current running server\n");
         printf("3. Add a server\n");
         printf("4. Remove a server\n");
         printf("5. What server is running?\n");
@@ -58,6 +58,7 @@ int main(int argc, char *argv[]){
             break;
         }
     }
+    writeToServersFile();
     return 0;
 }
 

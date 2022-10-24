@@ -27,5 +27,7 @@ int isAServerRunning();
 void listServers();
 int notAValidSelection(int option);
 int findEmptySpot();
+void zeroArray(char *arr);
+void performRemovalAction(int opt);
 
 #endif //MCSERVER_SERVER_H

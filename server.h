@@ -12,22 +12,19 @@ struct Servers{
     char *name;
     char *filePath;
 };
-
-struct Servers servers[MAX_ARRAY_SIZE];
-
-void startMCServer();
+void startMCServer(struct Servers *servers);
 void stopMCServer();
-void addMCserver();
-void removeMCServer();
+void addMCserver(struct Servers *servers);
+void removeMCServer(struct Servers *servers);
 void whatServerIsRunning();
 void enterMCServerScreen();
-int copyFromServersFile();
-void writeToServersFile();
+int copyFromServersFile(struct Servers *servers);
+void writeToServersFile(struct Servers *servers);
 int isAServerRunning();
-void listServers();
-int notAValidSelection(int option);
-int findEmptySpot();
+void listServers(struct Servers *servers);
+int notAValidSelection(struct Servers *servers, int option);
+int findEmptySpot(struct Servers *servers);
 void zeroArray(char *arr);
-void performRemovalAction(int opt);
+void performRemovalAction(struct Servers *servers, int opt);
 
 #endif //MCSERVER_SERVER_H

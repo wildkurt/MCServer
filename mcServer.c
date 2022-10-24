@@ -18,6 +18,7 @@
  * 7. Exit the program*/
 
 int main(int argc, char *argv[]){
+    struct Servers servers[MAX_ARRAY_SIZE];
     char input;
     //Explain what the program does
     printf("This program can start and stop Minecraft servers on this PC.\n");
@@ -26,9 +27,9 @@ int main(int argc, char *argv[]){
     //This part is for handling the situation where there isn't a server
     //file or the file is empty. Needs to go straight to entering a
     //server.
-    if(copyFromServersFile() == 0){
+    if(copyFromServersFile(servers) == 0){
         printf("No servers are saved in the this program.\n");
-        addMCserver();
+        addMCserver(servers);
     }
     //Menu for the 7 options
     while(1){
@@ -45,10 +46,10 @@ int main(int argc, char *argv[]){
         getchar();
 
         switch (input) {
-            case '1' : startMCServer();break;
+            case '1' : startMCServer(servers);break;
             case '2' : stopMCServer();break;
-            case '3' : addMCserver();break;
-            case '4' : removeMCServer();break;
+            case '3' : addMCserver(servers);break;
+            case '4' : removeMCServer(servers);break;
             case '5' : whatServerIsRunning();break;
             case '6' : enterMCServerScreen();break;
             case '7' : break;
@@ -58,7 +59,7 @@ int main(int argc, char *argv[]){
             break;
         }
     }
-    writeToServersFile();
+    writeToServersFile(servers);
     return 0;
 }
 

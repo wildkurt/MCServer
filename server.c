@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 //These are functions for the main menu
-void startMCServer(){
+void startMCServer(struct Servers *servers){
     //This function will list the available servers
     //and allow user to select the server they wish
     //to start.
@@ -20,19 +20,16 @@ void startMCServer(){
     }
     //See if the list of servers are empty
     if(servers[0].name == 0){
-        addMCserver();
+        addMCserver(servers);
     }
     //List the available servers
     //Get the selection from the user
     while(1){
-        listServers();
+        listServers(servers);
         printf("Please select the server to run.\n");
         scanf("%d",&option);
-        if(option < 1 || option > 200){
-            printf("%d is a invalid selection\n", option);
-            continue;
-        }
-        else if(notAValidSelection(option)){
+
+        if(notAValidSelection(servers,option)){
             printf("%d is a invalid selection\n", option);
             continue;
         }
@@ -71,10 +68,10 @@ void stopMCServer(){
         fprintf(stderr,"No Server is running\n");
     }
 }
-void addMCserver(){
+void addMCserver(struct Servers *servers){
     char nameBuffer[MAX_ARRAY_SIZE]={0};
     char pathBuffer[MAX_ARRAY_SIZE]={0};
-    int index = 0, nameSize = 0, pathSize = 0;
+    int index = 0;
     printf("Provide a name and the file path to\n");
     printf("the starting script for the MC server\n");
     printf("Type \"exit\" when finished inputing servers.\n");
@@ -94,7 +91,7 @@ void addMCserver(){
         temp.filePath = calloc(sizeof(char),1+strlen(pathBuffer)*sizeof(char));
         strcat(temp.name, nameBuffer);
         strcat(temp.filePath, pathBuffer);
-        index = findEmptySpot();
+        index = findEmptySpot(servers);
         if(index > -1){
             servers[index] = temp;
         }
@@ -112,17 +109,17 @@ void addMCserver(){
  * Case 2) the server is at the end of the array: Just zero the element
  * Case 3) the server is in the middle of the array: shuffle everything
  * to the left*/
-void removeMCServer(){
+void removeMCServer(struct Servers *servers){
     char input = 0;
     while(1){
         printf("Please select the server you wish to remove\n");
-        listServers();
+        listServers(servers);
         input = getchar();
-        if(notAValidSelection(input - '0')){
-            printf("%c is not a valid selection\n");
+        if(notAValidSelection(servers,input - '0')){
+            printf("%c is not a valid selection\n",input);
         }
         else{
-            performRemovalAction(input-'0'-1);
+            performRemovalAction(servers,input-'0'-1);
             break;
         }
     }
@@ -150,7 +147,7 @@ void enterMCServerScreen(){
 //Background functions
 /**This function should only run if a serverfile exists
  * and if it is not empty.*/
-int copyFromServersFile(){
+int copyFromServersFile(struct Servers *servers){
     FILE *input;
     int size = 0, index = 0;
     char nameBuffer[MAX_ARRAY_SIZE] = {0};
@@ -180,7 +177,7 @@ int copyFromServersFile(){
 }
 /**This should only run if there are servers in the servers
  * array when the program exits.*/
-void writeToServersFile(){
+void writeToServersFile(struct Servers *servers){
     FILE *serversfile;
     char writeBuffer[MAX_ARRAY_SIZE] = {0};
 
@@ -273,7 +270,7 @@ int isAServerRunning(){
         }
     }
 }
-void listServers(){
+void listServers(struct Servers *servers){
     int index = 0;
     while(servers[index].name != 0){
         printf("%d) %s\n", index + 1, servers[index].name);
@@ -281,16 +278,18 @@ void listServers(){
     }
 }
 //Checks to see if the option is a valid server
-int notAValidSelection(int option){
-    if(servers[option].name == 0){
+int notAValidSelection(struct Servers *servers, int option){
+    if(option < 0 || option > 200)
         return 1;
+    else if(servers[option].name != 0){
+        return 0;
     }
     else{
-        return 0;
+        return 1;
     }
 }
 //Finds the first empty spot in the servers array
-int findEmptySpot(){
+int findEmptySpot(struct Servers *servers){
     int i = 0;
     for(;i < MAX_ARRAY_SIZE;i++){
         if(servers[i].name == 0)
@@ -304,7 +303,7 @@ void zeroArray(char *arr){
         arr[i] = '\0';
 }
 
-void performRemovalAction(int opt){
+void performRemovalAction(struct Servers *servers, int opt){
     int size = 0;
     while(servers[size].name != 0){
         size++;

@@ -14,16 +14,17 @@
  * 9. Option to list servers*/
 int main(int argc, char *argv[]){
     char input;
-    struct Node *head;
+    struct Node *head=0;
 
     printf("Hello, this program will help manage multiple installations of Minecraft servers\n");
     while(input != 'x'){
         printf("1. List available servers\n");
         printf("2. Add a server\n");
         printf("3. Remove a server\n");
-        printf("4. Currently running server\n");
-        printf("5. Stop currently running server\n");
-        printf("6. Join server instance\n");
+        printf("4. Start a server\n");
+        printf("5. Currently running server\n");
+        printf("6. Stop currently running server\n");
+        printf("7. Join server instance\n");
         printf("Input an option from above, x to exit\n");
         input = getchar();
         getchar();
@@ -32,9 +33,10 @@ int main(int argc, char *argv[]){
             case '1' : listServers(head); break;
             case '2' : addServer(&head); break;
             case '3' : removeServer(&head);break;
-            case '4' : printf("Not implemented yet\n");break;
-            case '5' : printf("Not implemented yet\n");break;
+            case '4' : startServer(head); break;
+            case '5' : runningServer();break;
             case '6' : printf("Not implemented yet\n");break;
+            case '7' : printf("Not implemented yet\n");break;
             case 'x' : break;
             default: printf("Invalid option\n"); break;
         }

@@ -31,14 +31,7 @@ void pop(struct Node **head){
     free(temp->name);
     free(temp);
 }
-void removeNode(struct Node *node){
-    (node->prev)->next = node->next;
-    if(node->next != 0)
-        (node->next)->prev = node->prev;
-    free(node->name);
-    free(node->directory);
-    free(node);
-}
+
 void listServers(struct Node *head){
     int counter = 1;
     if(head == 0){
@@ -73,32 +66,70 @@ void addServer(struct Node ** head){
  * 4. Remove it*/
 void removeServer(struct Node **head){
     int input = 0;
-    struct Node *temp=0;
-
-    listServers((*head));
-
+    struct Node *temp = 0;
     if((*head) == 0)
         return;
     temp = (*head);
+    listServers(*head);
+
     printf("Select the server you wish to remove: ");
-    input = (int) getchar() - '0';
+    input = getchar() - '0';
     getchar();
-    //Case 1: only one server
-    //Case 2: More than one
-    //Case 2a: Node at front
-    //Case 2b: Node in the middle
-    //Case 2c: Node at the end
-    if(input == 1 && temp->next == 0){
-        //free the node and set head to 0
-        free((*head)->name);
-        free((*head)->directory);
-        free((*head));
-        (*head) = 0;
+
+    for(int i = 1; i < input; i++){
+        temp = temp->next;
     }
-    else{
-        for(int i = 1; i < input; i++){
-            temp=temp->next;
+    //case 1: node at front
+    if(temp->prev == 0){
+        if(temp->next == 0){
+            (*head) = 0;
         }
-        removeNode(temp);
+        else{
+            (*head) = temp->next;
+            free(temp->name);
+            free(temp->directory);
+            free(temp);
+        }
     }
+    //case 2: node in middle
+    else if(temp->prev != 0 && temp->next != 0){
+        (temp->prev)->next = temp->next;
+        (temp->next)->prev = temp->prev;
+        free(temp->name);
+        free(temp->directory);
+        free(temp);
+    }
+    //case 3: node at end
+    else if(temp->prev != 0 && temp->next == 0){
+        (temp->prev)->next = 0;
+        free(temp->name);
+        free(temp->directory);
+        free(temp);
+    }
+}
+
+void startServer(struct Node *head){
+    int input = 0;
+    char command[MAX_ARRAY_SIZE] = {0};
+    char *commandA = "screen -dmS ";
+
+    listServers(head);
+    printf("Which server do you wish to start?: \n");
+    input = getchar() - '0';
+    getchar();
+
+    for(int i = 0; i < input; i++){
+        head = head->next;
+    }
+
+    strcat(command, commandA);
+    strcat(command, head->name);
+    strcat(command, " ");
+    strcat(command, head->directory);
+    system(command);
+}
+
+void runningServer(){
+    char *command = "screen -ls";
+    system(command);
 }

@@ -18,4 +18,6 @@ void pop(struct Node**);
 void listServers(struct Node *);
 void addServer(struct Node**);
 void removeServer(struct Node**);
+void startServer(struct Node*);
+void runningServer();
 #endif //MCSERVER_MCSERVERMAIN_H

@@ -112,13 +112,15 @@ void startServer(struct Node *head){
     int input = 0;
     char command[MAX_ARRAY_SIZE] = {0};
     char *commandA = "screen -dmS ";
+    FILE *output;
+    extern char runningpath[];
 
     listServers(head);
     printf("Which server do you wish to start?: \n");
     input = getchar() - '0';
     getchar();
 
-    for(int i = 0; i < input; i++){
+    for(int i = 1; i < input; i++){
         head = head->next;
     }
 
@@ -127,9 +129,86 @@ void startServer(struct Node *head){
     strcat(command, " ");
     strcat(command, head->directory);
     system(command);
+
+    output =  fopen(runningpath, "w");
+    fputs(head->name,output);
+    fclose(output);
 }
 
 void runningServer(){
     char *command = "screen -ls";
     system(command);
+}
+
+void stopRunningServer(struct Node*){
+    FILE *input, *output;
+    char serverName[MAX_ARRAY_SIZE] = {0};
+    char command[MAX_ARRAY_SIZE] = {0};
+    char *commandA = "screen -S ";
+    char *commandB = " -X stuff \"stop^M\"";
+    extern char runningpath[];
+
+    input = fopen(runningpath,"r");
+    fgets(serverName,MAX_ARRAY_SIZE,input);
+    fclose(input);
+    output = fopen(runningpath,"w");
+    fputs("none",output);
+    fclose(output);
+
+    strcat(command, commandA);
+    strcat(command, serverName);
+    strcat(command, commandB);
+    system(command);
+}
+
+void joinServerInstance(struct Node*){
+    FILE *running;
+    char buffer[MAX_ARRAY_SIZE] = {0};
+    char *commandA = "screen -r ";
+    char command[MAX_ARRAY_SIZE] = {0};
+    extern char runningpath[];
+
+    running = fopen(runningpath,"r");
+    fgets(buffer,MAX_ARRAY_SIZE,running);
+
+    strcat(command, commandA);
+    strcat(command, buffer);
+    system(command);
+}
+
+void openServerList(struct Node **head){
+    FILE *savedFile;
+    char name[MAX_ARRAY_SIZE] = {0};
+    char path[MAX_ARRAY_SIZE] = {0};
+    char buffer[MAX_ARRAY_SIZE] = {0};
+    extern char savepath[];
+
+    savedFile = fopen(savepath, "r");
+    if(savedFile == 0)
+        return;
+    while(fgets(buffer, MAX_ARRAY_SIZE, savedFile)){
+        sscanf(buffer,"%s""%s", name, path);
+        push(head,path,name);
+    }
+    fclose(savedFile);
+}
+
+void closeServerList(struct Node **head){
+    FILE *savedFile;
+    extern char savepath[];
+
+    savedFile = fopen(savepath,"w");
+
+    if(savedFile == 0){
+        fprintf(stderr,"Save Failed");
+        return;
+    }
+    while((*head)!=0){
+        fputs((*head)->name, savedFile);
+        fputs(" ",savedFile);
+        fputs((*head)->directory, savedFile);
+        fputs("\n",savedFile);
+        pop(head);
+    }
+    fclose(savedFile);
 }
